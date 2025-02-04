@@ -33,6 +33,7 @@ class Package extends ProjectDependencies {
   final List<String> authors;
   final String version;
   final String? license;
+  final String? licenseLight;
   final bool isMarkdown;
   final bool isSdk;
 
@@ -46,6 +47,7 @@ class Package extends ProjectDependencies {
     required this.authors,
     required this.version,
     this.license,
+    this.licenseLight,
     required this.isMarkdown,
     required this.isSdk,
     required super.dependencies,
@@ -64,6 +66,7 @@ class Package extends ProjectDependencies {
         authors: (json['authors'] as List<dynamic>).map((e) => e as String).toList(),
         version: json['version'] as String,
         license: json['license'] as String?,
+        licenseLight: json['licenseLight'] as String?,
         isMarkdown: json['isMarkdown'] as bool,
         isSdk: json['isSdk'] as bool,
         dependencies: [],
@@ -76,6 +79,7 @@ class Package extends ProjectDependencies {
         'authors': authors,
         'version': version,
         'license': license,
+        'licenseLight': licenseLight,
         'isMarkdown': isMarkdown,
         'isSdk': isSdk,
       };
@@ -111,6 +115,7 @@ class Package extends ProjectDependencies {
     }
 
     String? license;
+    String? licenseLight;
     bool isMarkdown = false;
     if (outerName == 'flutter' && flutterDir != null) {
       license = await File(path.join(flutterDir, 'LICENSE')).readAsString();
@@ -128,6 +133,15 @@ class Package extends ProjectDependencies {
 
     if (license == '') {
       license = null;
+    }
+
+    if (license != null) {
+      licenseLight = license
+          .split('\n')
+          .map((line) => line.trim())
+          .firstWhere((line) => line.isNotEmpty, orElse: () => '');
+    } else {
+      licenseLight = null;
     }
 
     dynamic yaml;
@@ -161,6 +175,7 @@ class Package extends ProjectDependencies {
       authors: yaml['authors']?.cast<String>()?.toList() ?? (yaml['author'] != null ? [yaml['author']] : []),
       version: version.trim(),
       license: license?.trim().replaceAll('\r\n', '\n'),
+      licenseLight: licenseLight?.trim().replaceAll('\r\n', '\n'),
       isMarkdown: isMarkdown,
       isSdk: isSdk,
       dependencies: [],
