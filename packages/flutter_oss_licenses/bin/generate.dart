@@ -84,6 +84,7 @@ main(List<String> args) async {
         writeIfNotNull('authors', l.authors);
         writeIfNotNull('version', l.version);
         writeIfNotNull('license', l.license);
+        writeIfNotNull('licenseLight', l.licenseLight);
         writeIfNotNull('isMarkdown', l.isMarkdown);
         writeIfNotNull('isSdk', l.isSdk);
         sb.writeln('    dependencies: [${l.dependencies.map((d) => 'PackageRef(\'${d.name}\')').join(', ')}]');
@@ -131,6 +132,8 @@ class Package {
   final String version;
   /// License
   final String? license;
+  /// License Light
+  final String? licenseLight;
   /// Whether the license is in markdown format or not (plain text).
   final bool isMarkdown;
   /// Whether the package is included in the SDK or not.
@@ -146,6 +149,7 @@ class Package {
     required this.authors,
     required this.version,
     this.license,
+    this.licenseLight,
     required this.isMarkdown,
     required this.isSdk,
     required this.dependencies,
