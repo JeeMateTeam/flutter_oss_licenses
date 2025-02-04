@@ -30,7 +30,7 @@ main(List<String> args) async {
     final projectRoot = results['project-root'] ?? await findProjectRoot();
     final outputFilePath = results['output'] ?? path.join(projectRoot, 'lib', 'oss_licenses.dart');
     final generateJson = results['json'] || path.extension(outputFilePath).toLowerCase() == '.json';
-    final disableLicense = results['disable-license'];
+    final disableLicense = results['disableLicense'];
 
     final deps = await oss.listDependencies(
       pubspecLockPath: path.join(projectRoot, 'pubspec.lock'),
