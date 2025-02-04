@@ -210,7 +210,7 @@ This option can be specified multiple times, or as a comma-separated list.
       abbr: 'p', defaultsTo: null, help: 'Explicitly specify project root directory that contains pubspec.lock.');
   parser.addFlag('json',
       abbr: 'j', defaultsTo: false, negatable: false, help: 'Generate JSON file rather than dart file.');
-  parser.addFlag('disable-license', defaultsTo: false, negatable: false, help: 'Disable license information in the output.');
+  parser.addFlag('disableLicense', abbr: 'd', defaultsTo: false, negatable: false, help: 'Disable license information in the output.');
   parser.addFlag('help', abbr: 'h', defaultsTo: false, negatable: false, help: 'Show the help.');
 
   return parser;
