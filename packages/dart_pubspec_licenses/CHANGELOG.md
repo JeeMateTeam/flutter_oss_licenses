@@ -1,3 +1,7 @@
+## 3.0.15
+
+- Fixed compatibility with Flutter 3.35.x by pinning pana to ^0.22.20, which uses meta ^1.16.0 ([pdfrx#563](https://github.com/espresso3389/pdfrx/issues/563))
+
 ## 3.0.14
 
 - Fixed PathNotFoundException when processing Flutter pre-release versions by reading from `bin/cache/flutter.version.json` instead of `version` file ([#33](https://github.com/espresso3389/flutter_oss_licenses/issues/33)).
