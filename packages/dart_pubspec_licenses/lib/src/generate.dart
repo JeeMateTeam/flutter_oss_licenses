@@ -42,6 +42,7 @@ Future<int> generate(List<String> args) async {
         results['output'] ??
         (results['json'] ? 'oss_licenses.json' : path.join(projectRoot, 'lib', 'oss_licenses.dart'));
     final generateJson = results['json'] || path.extension(outputFilePath).toLowerCase() == '.json';
+    final disableLicense = results['disableLicense'];
     final deps = await oss.listDependencies(
       pubspecYamlPath: path.join(projectRoot, 'pubspec.yaml'),
       ignore: results['ignore'],
@@ -106,7 +107,12 @@ Future<int> generate(List<String> args) async {
         writeIfNotNull('isSdk', l.isSdk);
         sb.writeln('    dependencies: [${l.dependencies.map((d) => 'PackageRef(\'${d.name}\')').join(', ')}],');
         sb.writeln('    devDependencies: [${l.devDependencies.map((d) => 'PackageRef(\'${d.name}\')').join(', ')}],');
-        writeIfNotNull('license', l.license);
+        if (!disableLicense) {
+          writeIfNotNull('license', l.license);
+        } else {
+          writeIfNotNull('license', 'Disable');
+        }
+        writeIfNotNull('licenseLight', l.licenseLight);
         sb.writeln('  );');
         sb.writeln('');
       }
@@ -163,6 +169,8 @@ class Package {
   final String? version;
   /// License
   final String? license;
+  /// License Light
+  final String? licenseLight;
   /// The [SPDX](https://spdx.org/licenses/) license identifiers, if detected.
   final List<String> spdxIdentifiers;
 
@@ -178,6 +186,7 @@ class Package {
     this.repository,
     this.version,
     this.license,
+    this.licenseLight,
     this.spdxIdentifiers = const [],
   });
 }
@@ -263,6 +272,13 @@ This option can be specified multiple times, or as a comma-separated list.
     defaultsTo: false,
     negatable: false,
     help: 'Generate JSON file rather than dart file.',
+  );
+  parser.addFlag(
+    'disableLicense',
+    abbr: 'd',
+    defaultsTo: false,
+    negatable: false,
+    help: 'Disable license information in the output.',
   );
   parser.addFlag('help', abbr: 'h', defaultsTo: false, negatable: false, help: 'Show the help.');
 

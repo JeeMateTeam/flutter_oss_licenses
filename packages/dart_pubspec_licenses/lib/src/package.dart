@@ -45,6 +45,7 @@ class Package {
     this.repository,
     this.version,
     this.license,
+    this.licenseLight,
     this.spdxIdentifiers = const [],
   });
 
@@ -76,6 +77,9 @@ class Package {
 
   /// The full text of the license, if available.
   final String? license;
+
+  /// The first non-empty line of the license text, offering a concise license summary.
+  final String? licenseLight;
 
   /// The [SPDX](https://spdx.org/licenses/) license identifiers, if detected.
   final List<String> spdxIdentifiers;
@@ -112,6 +116,7 @@ class Package {
     'authors': authors,
     'version': version,
     'license': license,
+    'licenseLight': licenseLight,
     'isMarkdown': isMarkdown,
     'isSdk': isSdk,
     if (isDirectDependency != null) 'isDirectDependency': isDirectDependency,
@@ -178,6 +183,7 @@ class Package {
   }) async {
     //print('Loading package from ${projectRoot.path}');
     String? license;
+    String? licenseLight;
     bool isMarkdown = false;
     if (outerName == 'flutter' && flutterDir != null) {
       license = await File(path.join(flutterDir, 'LICENSE')).readAsString();
@@ -197,6 +203,10 @@ class Package {
     if (license == '') {
       license = null;
     } else if (license != null) {
+      licenseLight = license
+          .split('\n')
+          .map((line) => line.trim())
+          .firstWhere((line) => line.isNotEmpty, orElse: () => '');
       final detected = await pana_license.detectLicenseInContent(license, relativePath: 'not_used');
       if (detected.isNotEmpty) {
         spdxIds.addAll(detected.map((e) => e.spdxIdentifier));
@@ -231,6 +241,7 @@ class Package {
       authors: yaml['authors']?.cast<String>()?.toList() ?? (yaml['author'] != null ? [yaml['author']] : []),
       version: (version as String?)?.trim(),
       license: license?.trim().replaceAll('\r\n', '\n'),
+      licenseLight: licenseLight?.trim().replaceAll('\r\n', '\n'),
       spdxIdentifiers: spdxIds,
       isMarkdown: isMarkdown,
       isSdk: isSdk,
